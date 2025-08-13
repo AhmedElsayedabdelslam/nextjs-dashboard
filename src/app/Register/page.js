@@ -151,14 +151,15 @@
 
 
 
+
 "use client";
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 export default function ElegantRegister() {
-    useEffect(()=>{
-      document.title='TRegister'
-    })
+  useEffect(() => {
+    document.title = 'TRegister'
+  })
   const router = useRouter();
   const [formData, setFormData] = useState({
     fullName: "",
@@ -210,13 +211,16 @@ export default function ElegantRegister() {
     e.preventDefault();
     if (validate()) {
       setIsSubmitting(true);
-      
+
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      localStorage.setItem("userData", JSON.stringify(formData));
+
+      Object.keys(formData).forEach(key => {
+        localStorage.setItem(key, formData[key]);
+      });
+
       setShowSuccess(true);
-      
+
       setTimeout(() => {
         setFormData({
           fullName: "",
@@ -414,7 +418,7 @@ export default function ElegantRegister() {
             <div className="text-center pt-4">
               <p className="text-slate-400 text-sm">
                 Already have an account?{' '}
-                <button 
+                <button
                   type="button"
                   onClick={() => router.push("/login")}
                   className="text-cyan-400 hover:text-cyan-300 font-medium transition-colors duration-300"
