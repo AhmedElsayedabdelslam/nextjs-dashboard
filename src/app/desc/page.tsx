@@ -1,17 +1,18 @@
 'use client'
-import { useSearchParams } from "next/navigation"
-export default function  Des() {
-    const search=useSearchParams()
-    const id =search.get('id')
-    const title=search.get('title')
-     const desc=search.get('descrption')
 
-    
-    return (
-        <>
-        <h1>{id}</h1>
-        <h1>{title}</h1>
-        <h1>{desc}</h1>
-        </>
-    )
+import { Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
+
+function DescPageContent() {
+  const searchParams = useSearchParams();
+  const myParam = searchParams.get('id'); // مثال
+  return <div>Param: {myParam}</div>;
+}
+
+export default function DescPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <DescPageContent />
+    </Suspense>
+  );
 }
