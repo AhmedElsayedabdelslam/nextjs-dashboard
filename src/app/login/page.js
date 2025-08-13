@@ -101,9 +101,9 @@ import { useRouter } from "next/navigation";
 
 
 export default function ElegantLogin() {
-    useEffect(()=>{
-      document.title='Login'
-    })
+  useEffect(() => {
+    document.title = 'Login'
+  })
   const router = useRouter();
   const [formData, setFormData] = useState({
     email: "",
@@ -145,9 +145,10 @@ export default function ElegantLogin() {
 
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1000));
-
       const storedEmail = localStorage.getItem("email");
       const storedPassword = localStorage.getItem("password");
+
+
 
       if (storedEmail === formData.email && storedPassword === formData.password) {
         setShowSuccess(true);
