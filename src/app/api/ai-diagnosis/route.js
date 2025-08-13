@@ -1,23 +1,22 @@
 import { NextResponse } from 'next/server';
 
-// 🔑 مفتاح OpenRouter
+
 const AI_API_KEY =
   process.env.OPENROUTER_API_KEY ||
-  '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';
+  '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';
 
-// 🌐 رابط API
+
 const AI_API_URL = 'https://openrouter.ai/api/v1/chat/completions';
 
-// 📌 API Route
 export async function POST(request) {
   try {
-    // قراءة البيانات من الريكوست
+  
     const { symptoms, organ, language } = await request.json();
 
-    // الموديل ثابت هنا
+
     const model = 'gpt-3.5-turbo';
 
-    // 📨 إرسال الطلب لـ OpenRouter
+   
     const response = await fetch(AI_API_URL, {
       method: 'POST',
       headers: {
@@ -52,7 +51,7 @@ Always make it clear this is only an example and not a replacement for visiting 
       }),
     });
 
-    // ❌ لو فيه خطأ من API
+
     if (!response.ok) {
       const errorDetails = await response.text();
       throw new Error(`API Error ${response.status}: ${errorDetails}`);
@@ -60,7 +59,7 @@ Always make it clear this is only an example and not a replacement for visiting 
 
     const data = await response.json();
 
-    // ✅ الرد النهائي
+
     return NextResponse.json({
       success: true,
       model,
