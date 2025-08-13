@@ -91,6 +91,12 @@ import { NextResponse } from 'next/server';
 
 const AI_API_KEY = process.env.OPENROUTER_API_KEY;
 
+
+
+const AI_API_URL = 'https://openrouter.ai/api/v1/chat/completions';
+
+export async function POST(request) {
+  
 if (!AI_API_KEY) {
   console.error("❌ API Key is missing! Add OPENROUTER_API_KEY in Vercel settings.");
   return NextResponse.json(
@@ -99,9 +105,6 @@ if (!AI_API_KEY) {
   );
 }
 
-const AI_API_URL = 'https://openrouter.ai/api/v1/chat/completions';
-
-export async function POST(request) {
   try {
     const { condition, language } = await request.json();
 
