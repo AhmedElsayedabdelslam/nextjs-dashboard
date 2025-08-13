@@ -100,25 +100,26 @@
 
 
 
+// ملف: src/app/api/ai-diagnosis/route.js
+import { NextResponse } from 'next/server';
 
-const AI_API_KEY = process.env.OPENROUTER_API_KEY;
-const AI_API_URL = 'https://openrouter.ai/api/v1/chat/completions'||'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';
+const AI_API_KEY = process.env.OPENROUTER_API_KEY ||
+  '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';
 
+const AI_API_URL = 'https://openrouter.ai/api/v1/chat/completions';
 
-exports.handler = async function(event, context) {
+export async function POST(request) {
   if (!AI_API_KEY) {
-    console.error("❌ API Key is missing! Add OPENROUTER_API_KEY in Netlify settings.");
-    return {
-      statusCode: 500,
-      body: JSON.stringify({
-        success: false,
-        error: "Server configuration error: Missing API key",
-      }),
-    };
+    console.error("❌ API Key is missing! Add OPENROUTER_API_KEY in environment variables.");
+    return NextResponse.json(
+      { success: false, error: "Server configuration error: Missing API key" },
+      { status: 500 }
+    );
   }
 
   try {
-    const { symptoms, organ, language } = JSON.parse(event.body || '{}');
+    const { symptoms, organ, language } = await request.json();
+
     const model = 'gpt-3.5-turbo';
 
     const response = await fetch(AI_API_URL, {
@@ -142,12 +143,12 @@ Your answer must include (do not skip any part):
 
 ⚠️ Always include at least one real medicine name.
 Respond in ${language === 'en' ? 'English' : 'Arabic'}.
-Always make it clear this is only an example and not a replacement for visiting a real doctor.`
+Always clarify this is only an example and not a replacement for visiting a real doctor.`
           },
           {
             role: 'user',
-            content: `Symptoms: ${symptoms} in my ${organ}.`
-          }
+            content: `Symptoms: ${symptoms} in my ${organ}.`,
+          },
         ],
         temperature: 0.7,
         max_tokens: 800,
@@ -161,22 +162,15 @@ Always make it clear this is only an example and not a replacement for visiting 
 
     const data = await response.json();
 
-    return {
-      statusCode: 200,
-      body: JSON.stringify({
-        success: true,
-        model,
-        response: data.choices?.[0]?.message?.content || 'No response from AI.',
-      }),
-    };
+    return NextResponse.json({
+      success: true,
+      model,
+      response: data.choices?.[0]?.message?.content || 'No response from AI.',
+    });
   } catch (error) {
-    return {
-      statusCode: 500,
-      body: JSON.stringify({
-        success: false,
-        error: error.message,
-      }),
-    };
+    return NextResponse.json(
+      { success: false, error: error.message },
+      { status: 500 }
+    );
   }
-};
-
+}
