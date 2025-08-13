@@ -156,28 +156,24 @@
 
 
 
-
-
+import { NextResponse } from 'next/server';
 
 const AI_API_KEY = process.env.OPENROUTER_API_KEY || 
   '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';
 
 const AI_API_URL = 'https://openrouter.ai/api/v1/chat/completions';
 
-exports.handler = async function(event, context) {
+export async function POST(request) {
   if (!AI_API_KEY) {
-    console.error("❌ API Key is missing! Add OPENROUTER_API_KEY in Netlify settings.");
-    return {
-      statusCode: 500,
-      body: JSON.stringify({
-        success: false,
-        error: "Server configuration error: Missing API key"
-      }),
-    };
+    console.error("❌ API Key is missing! Add OPENROUTER_API_KEY in Vercel/Netlify settings.");
+    return NextResponse.json(
+      { success: false, error: "Server configuration error: Missing API key" },
+      { status: 500 }
+    );
   }
 
   try {
-    const { condition, language } = JSON.parse(event.body || '{}');
+    const { condition, language } = await request.json();
 
     const model = 'gpt-3.5-turbo'; // Using the most advanced model available
 
@@ -270,8 +266,8 @@ Important: Add this disclaimer in ${language === 'en' ? 'English' : 'Arabic'} at
             content: `Provide complete medication information for: ${condition}`
           },
         ],
-        temperature: 0.3, 
-        max_tokens: 2000, 
+        temperature: 0.3,
+        max_tokens: 2000,
       }),
     });
 
@@ -283,21 +279,14 @@ Important: Add this disclaimer in ${language === 'en' ? 'English' : 'Arabic'} at
     const data = await response.json();
     const content = data.choices?.[0]?.message?.content || 'No response from AI';
 
-    return {
-      statusCode: 200,
-      body: JSON.stringify({
-        success: true,
-        response: content,
-      }),
-    };
+    return NextResponse.json({
+      success: true,
+      response: content,
+    });
   } catch (error) {
-    return {
-      statusCode: 500,
-      body: JSON.stringify({
-        success: false,
-        error: error.message,
-      }),
-    };
+    return NextResponse.json(
+      { success: false, error: error.message },
+      { status: 500 }
+    );
   }
-};
-
+}
