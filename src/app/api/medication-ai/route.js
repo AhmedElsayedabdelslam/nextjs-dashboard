@@ -89,7 +89,7 @@
 
 import { NextResponse } from 'next/server';
 
-const AI_API_KEY = process.env.OPENROUTER_API_KEY || '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';
+const AI_API_KEY = process.env.OPENROUTER_API_KEY || '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';
 const AI_API_URL = 'https://openrouter.ai/api/v1/chat/completions';
 
 export async function POST(request) {
